@@ -14,3 +14,26 @@
     Explanation 0
         2 + 3 = 5
 */
+
+#include <stdio.h>
+int NumberSum(int n)// should be recursive function
+{
+// Write your code here
+    int sum = 0;
+    while(n){
+        sum+=n%10;
+        n=n/10;
+    }
+    if(sum > 9)
+        sum = NumberSum(sum);
+    return sum;
+}
+// Driver code
+int main()
+{
+    int n, sum;
+    scanf("%d", &n);
+    sum = NumberSum(n);
+    printf("%d\n",sum);
+    return 0;
+}
