@@ -81,7 +81,7 @@ def clientthread(conn, addr):
                     quiz()
                 else:
                     conn.send(" player " + str(client[1]+1) + " pressed buzzer first\n\n")
-    except ConnectionResetError:
+    except (ConnectionResetError, ConnectionAbortedError):
         print("Connection with", addr, "reset or closed by client.")
         remove(conn)
 
@@ -94,20 +94,27 @@ def broadcast(message):
             remove(clients)
 
 def end_quiz():
-        broadcast("Game Over\n")
-        bzr[1]=1
-        i = Count.index(max(Count))
-        broadcast("player " + str(i+1)+ " wins!! by scoring "+str(Count[i])+" points.")
-        for x in range(len(list_of_clients)):
-            list_of_clients[x].send("You scored " + str(Count[x]) + " points.")
-            
-        server.close()
+    broadcast("Game Over\n")
+    bzr[1]=1
+    i = Count.index(max(Count))
+    broadcast("player " + str(i+1)+ " wins!! by scoring "+str(Count[i])+" points.")
+    for x in range(len(list_of_clients)):
+        list_of_clients[x].send("You scored " + str(Count[x]) + " points.")
+
+    server.close()
+
+# def quiz():
+#     bzr[2] = random.randint(0,10000)%len(Q)
+#     if len(Q) != 0:
+#         for connection in list_of_clients:
+#             connection.send(Q[bzr[2]])
 
 def quiz():
     bzr[2] = random.randint(0,10000)%len(Q)
     if len(Q) != 0:
         for connection in list_of_clients:
-            connection.send(Q[bzr[2]])
+            connection.send(Q[bzr[2]].encode('utf-8'))
+
 
 def remove(connection):
     if connection in list_of_clients:
@@ -119,8 +126,11 @@ while True:
     Count.append(0)
     print(addr[0] + " connected")
     thread.start_new_thread(clientthread,(conn,addr))
-    if(len(list_of_clients)==3):
-        quiz()
-        
+    if len(list_of_clients) == 1:
+        conn.send("You are the only player connected. Do you want to start the quiz? (yes/no)\n".encode('utf-8'))
+        response = conn.recv(2048).decode('utf-8').strip().lower()
+        if response == 'yes':
+            quiz()
+
 conn.close()
 server.close()
