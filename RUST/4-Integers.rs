@@ -8,7 +8,8 @@
     6           Arch          isize            usize
 */
 
-fn main() {
+fn main()
+{
     let int1 = 22; // i32 by default
     let int2:u32 = 15;
     let int3:i32 = 10-20;

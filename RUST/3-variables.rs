@@ -1,4 +1,5 @@
-fn main() {
+fn main()
+{
     let str = "Hello Bhai";
     let flo = 2.2;
     let bool = false;

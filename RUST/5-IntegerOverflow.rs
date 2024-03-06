@@ -1,4 +1,5 @@
-fn main() {
+fn main()
+{
     let overflow1:u8= 255; //Can Store 255
     // 0 to 255 only allowed for u8
     let overflow2:u8=256;//overflow value is 0
