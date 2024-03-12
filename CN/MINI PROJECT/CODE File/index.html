@@ -76,33 +76,25 @@
         <header>
             <h1>Quiz Competition</h1>
         </header>
-
         <p>Question <span id="questionNumber">0</span></p>
         <section id="quiz">
             <!-- Question and options will be filled dynamically using JavaScript -->
         </section>
-
         <p>Score: <span id="score">0</span></p>
-
         <button onclick="checkAnswer()" id="checkAnswerButton">Check Answer</button>
         <button onclick="showNextQuestion()" id="nextQuestionButton" style="display: none;">Next Question</button>
-
     </div>
 
     <script>
-
-
         let questions = [];
         let currentQuestionIndex = 0;
         let score = 0;
-
         async function fetchAllQuestions() {
             try {
                 console.log("Fetching all questions");
                 const response = await fetch('https://opentdb.com/api.php?amount=10&type=multiple');
                 console.log("response Received: " + response);
                 const data = await response.json();
-
                 if (data.results.length > 0) {
                     questions = data.results;
                     showNextQuestion(); // Display the first question
@@ -119,7 +111,7 @@
             const nextQuestionButton = document.getElementById('nextQuestionButton');
             const checkAnswerButton = document.getElementById('checkAnswerButton');
             const questionNumberElement = document.getElementById('questionNumber');
-
+            
             if (currentQuestionIndex < questions.length) {
                 const questionData = questions[currentQuestionIndex++];
                 quizSection.innerHTML = `
