@@ -1,28 +1,45 @@
+import socket
 import webbrowser
 
-def open_webpage():
-    
-    server_ip = '10.14.143.190'
-    port = 8000  
+# Define the server IP and port
+server_ip = ''  # Loopback address for local testing
+port = 8000  # Change the port number if needed
 
-    # Open the webpage in the default web browser
-    url = f'https://{server_ip}:{port}/index.html'  
-    webbrowser.open(url, new=2)
+# Create a socket object
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-if __name__ == '__main__':
-    open_webpage()
+try:
+    # Connect to the server
+    client_socket.connect((server_ip, port))
 
-'''
-    1. Import: The script imports the webbrowser module, 
-                which provides a high-level interface to display web-based documents to users.
-    2. open_webpage() Function: This function is defined to open a webpage in the default web browser. 
-                It does the following:
-                    Defines the server's IP address (server_ip) and port number (port) where the webpage is hosted.
-                    Constructs the URL for the webpage to be opened. 
-                    The URL is formed using the HTTPS protocol and includes the server's IP address and port number, 
-                    as well as the specific page (index.html) to be opened.
-                    Uses the webbrowser.open() function to open the constructed URL in the default web browser. 
-                    The new=2 argument specifies to open the URL in a new tab, if possible.
-    3. Main Block: The script checks if it's being run as the main program (not imported as a module) 
-                and calls the open_webpage() function accordingly.
-'''
+    # Send GET request for index.html
+    client_socket.sendall(f"GET /index.html HTTP/1.1\r\nHost: {server_ip}:{port}\r\n\r\n".encode())
+
+    # Receive the response from the server
+    response = b''
+    while True:
+        # Receive in chunks of 4096 bytes
+        chunk = client_socket.recv(4096)
+        if not chunk:
+            break
+        response += chunk
+
+    # Decode the received bytes to string
+    response_str = response.decode()
+
+    print("Received response:")
+    print(response_str)  # Print the received response for debugging
+
+    # Save the entire response to a local HTML file
+    with open('index.html', 'w') as f:
+        f.write(response_str)
+
+    # Open the local HTML file in the default web browser
+    webbrowser.open('index.html')
+
+except socket.error as e:
+    print(f"Socket error: {e}")
+
+finally:
+    # Close the connection
+    client_socket.close()
