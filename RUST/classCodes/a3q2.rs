@@ -1,3 +1,4 @@
+// Assignment 3 Question 2
 // 2. create a simple employee management system where each employee has a name, age and department. 
 // use a structure to represent each employee.
 
